@@ -1,5 +1,6 @@
 module Auth
   class AuthController < ApplicationController
+    skip_forgery_protection
     skip_before_action :authenticate_request, only: [:create_auth_token]
     def create_auth_token
       user = User.by_email(email_param)
@@ -33,11 +34,15 @@ module Auth
     end
 
     def set_jwt_cookie(token)
+      is_cross_origin = Rails.env.development? && request.headers['Origin'].present?
+
+
       cookies.signed[:auth] = {
         value: token,
         httponly: true,
-        secure: Rails.env.production?,
-        same_site: :none
+        secure: Rails.env.production? || is_cross_origin,
+        same_site: is_cross_origin ? :none : :lax,
+        expires: 6.hours.from_now
       }
     end
   end
