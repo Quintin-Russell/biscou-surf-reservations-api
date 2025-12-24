@@ -2,6 +2,11 @@ module Auth
   class AuthController < ApplicationController
     skip_forgery_protection
     skip_before_action :authenticate_request, only: [:create_auth_token]
+
+    def current_user
+      @current_user
+    end
+
     def create_auth_token
       user = User.by_email(email_param)
       if user&.authenticate(password_param)
