@@ -15,9 +15,9 @@ class ApplicationController < ActionController::Base
 
     begin
       decoded = JWT.decode(token, Rails.application.credentials.jwt_secret, true, { algorithm: "HS256" })
-      unless decoded && is_verified_user(decoded.first["user_id"])
+      @current_user = User.find_by(id: decoded.first["user_id"])
+      unless decoded && @current_user.present?
         render json: { error: 'Invalid user' }, status: :unauthorized
-        return
       end
     rescue JWT::DecodeError => e
       Rails.logger.error "JWT Decode Error: #{e.message}"
