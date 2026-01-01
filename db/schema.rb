@@ -10,10 +10,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_02_093447) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_01_154214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
+
+  create_table "accommodation_locations", force: :cascade do |t|
+    t.integer "capacity"
+    t.string "city"
+    t.datetime "created_at", null: false
+    t.string "location"
+    t.string "name"
+    t.string "type"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "accommodations", force: :cascade do |t|
+    t.integer "bed_number"
+    t.integer "capacity"
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "type"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "activities", force: :cascade do |t|
+    t.date "availability_end"
+    t.date "avalability_start"
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "data"
+    t.datetime "processed_at"
+    t.string "source"
+    t.string "type"
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false

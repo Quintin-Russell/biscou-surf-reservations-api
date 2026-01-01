@@ -36,8 +36,16 @@ gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem "rack-cors"
-gem "redis"
-gem 'bcrypt', '~> 3.1.7'
+# Event-driven architecture core
+gem 'redis', '~> 5.0'
+gem 'sidekiq', '~> 7.0'
+gem 'sidekiq-cron', '~> 1.10'
+gem 'connection_pool', '~> 2.4'
+
+# Optional but helpful
+gem 'hiredis', '~> 0.6'
+gem 'oj', '~> 3.16'
+gem 'faker', '~> 3.2'
 gem 'jwt'
 gem 'jb'
 group :development, :test do
