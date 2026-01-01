@@ -1,0 +1,18 @@
+# Configuration file for Sidekiq
+:concurrency: <%= (Rails.application.credentials.SIDEKIQ_CONCURRENCY || 5).to_i %>
+:queues:
+  - events
+
+:max_retries: 3
+:pidfile: ./tmp/pids/sidekiq.pid
+:logfile: ./log/sidekiq.log
+
+:dynamic: true
+:scheduled: true
+
+# Retry jobs for up to 3 days
+:dead_max_jobs: 10_000
+:dead_timeout_in_seconds: 259200  # 3 days
+
+production:
+  :concurrency: 25
