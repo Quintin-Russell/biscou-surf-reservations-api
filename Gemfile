@@ -38,7 +38,7 @@ gem "image_processing", "~> 1.2"
 gem "rack-cors"
 # Event-driven architecture core
 gem 'redis', '~> 5.0'
-gem 'sidekiq', '~> 7.0'
+gem 'sidekiq', '~> 8.0'
 gem 'sidekiq-cron', '~> 1.10'
 gem 'connection_pool', '~> 2.4'
 
