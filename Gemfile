@@ -39,7 +39,7 @@ gem "rack-cors"
 # Event-driven architecture core
 gem 'redis', '~> 5.0'
 gem 'sidekiq', '~> 7.0'
-gem 'sidekiq-cron', '~> 1.10'
+gem 'sidekiq-cron', '~> 2.3'
 gem 'connection_pool', '~> 2.4'
 
 # Optional but helpful
