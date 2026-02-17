@@ -2,8 +2,8 @@
 
 class EventPublisher
   class << self
-    def publish(event_type:, payload: {}, options: {})
-      create_event(event_type:, payload:)
+    def publish(event_type:, action:, payload: {}, options: {})
+      create_event(event_type:, action:, payload:)
       # publish update if necessary
       handle_broadcast
       @event
@@ -18,8 +18,7 @@ class EventPublisher
     end
 
     def handle_broadcast
-      event_type = @event.event_type
-      case event_type
+      case @event.event_type
       when /^reservation\./
         ReservationBroadcaster.perform_later(@event)
       when /^user\./
@@ -27,7 +26,7 @@ class EventPublisher
       when /^activity\./
         ActivityBroadcaster.perform_later(@event)
       else
-        Rails.logger.warn "#{event_type} not broadcasted"
+        Rails.logger.warn "#{@event.event_type} not broadcasted"
       end
     end
 
@@ -35,8 +34,8 @@ class EventPublisher
 
     def make_standard_event(event_type:, action:, payload:)
       {
-        type: event_type,
-        action: action,
+        event_type:,
+        action:,
         data: payload,
         source: 'api'
       }

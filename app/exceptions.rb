@@ -17,4 +17,9 @@ module Exceptions
     def default_message = "Cannot create event: missing parameters"
     def initialize(*) = super(status: :unprocessable_entity)
   end
+
+  class UnbroadcastableEvent < BaseError
+    def default_message = "Cannot broadcast event: unknown action"
+    def initialize(*) = super(status: :unprocessable_entity)
+  end
 end
