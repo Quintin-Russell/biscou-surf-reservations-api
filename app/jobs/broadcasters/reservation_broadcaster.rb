@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class ReservationBroadcaster
+class ReservationBroadcaster < BaseBroadcaster
   def perform(event)
-    # broadcast to Redis
-    # broadcast to FE
+    broadcast(event)
     # after action/cleanup
   end
 end
