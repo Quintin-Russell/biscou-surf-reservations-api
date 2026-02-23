@@ -43,12 +43,17 @@ gem 'sidekiq-cron', '~> 1.10'
 gem 'connection_pool', '~> 2.4'
 
 # Optional but helpful
-gem 'hiredis', '~> 0.6'
 gem 'oj', '~> 3.16'
 gem 'faker', '~> 3.2'
 gem 'jwt'
 gem 'jb'
 group :development, :test do
+  gem 'rspec'
+  gem 'rspec-core'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails', '~> 6.2'
+  gem 'database_cleaner', '~> 2.0'
+  gem 'shoulda-matchers', '~> 5.0'
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
