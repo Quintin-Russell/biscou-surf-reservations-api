@@ -1,10 +1,13 @@
 module Auth
   class AuthController < ApplicationController
-    skip_forgery_protection
-    skip_before_action :authenticate_request, only: [:create_auth_token]
+    skip_before_action :authenticate_request, only: [:create_auth_token, :destroy_auth, :email_exists]
 
     def current_user
       @current_user
+    end
+
+    def email_exists
+      @email_exists = User.by_email(email_param)
     end
 
     def create_auth_token
