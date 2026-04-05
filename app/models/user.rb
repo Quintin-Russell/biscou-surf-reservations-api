@@ -8,12 +8,16 @@ class User < ApplicationRecord
   attribute :email, type: String
   attribute :password_digest, type: String
   attribute :password, type: String
-  attribute :role, type: String
-  attribute :permission, type: String
+  attribute :role, type: String, default: 'guest'
+  attribute :permission, type: String, default: 'guest'
 
   ### Validations
-  validates :email, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :permission, inclusion: { in: ['employee', 'instructor', 'guest', 'main_guest', 'manager', 'admin'] }
+  validates :role, inclusion: { in: ['employee', 'guest'] }
 
-  ### Scopes
-  scope :by_email, ->(email) { find_by(email: email) }
+
+  def self.by_email(email)
+    find_by(email: email)
+  end
 end
