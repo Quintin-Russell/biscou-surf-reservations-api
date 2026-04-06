@@ -26,5 +26,12 @@ module Exceptions
   class MissingParameters < BaseError
     def default_message = "Cannot complete request: missing parameters"
     def initialize(*) = super(status: :unprocessable_entity)
+    end
+
+  class Unauthorized < BaseError
+    def default_message = "Cannot complete request: unauthorized user"
+    def initialize(*) = super(status: :unauthorized)
   end
+
+
 end

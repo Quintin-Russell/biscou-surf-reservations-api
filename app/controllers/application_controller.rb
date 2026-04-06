@@ -6,23 +6,19 @@ class ApplicationController < ActionController::API
   private
 
   def authenticate_request
-    puts cookies.to_h
     token = cookies.signed[:auth]
-    unless token
-      render json: { error: 'No authentication token. Authentication required' }, status: :unauthorized
-    end
+    raise Exceptions::Unauthorized unless token.present?
 
     begin
       decoded = JWT.decode(token, Rails.application.credentials.jwt_secret, true, { algorithm: "HS256" })
       @current_user = User.find_by(id: decoded.first["user_id"])
-      unless decoded && @current_user.present?
-        render json: { error: 'Invalid user' }, status: :unauthorized
-      end
+      raise Exceptions::Unauthorized('invalid user') unless decoded.present? && @current_user.present?
+
     rescue JWT::DecodeError => e
       Rails.logger.error "JWT Decode Error: #{e.message}"
-      render json: { error: 'Invalid token' }, status: :unauthorized
+      raise Exceptions::Unauthorized('invalid token')
     rescue JWT::ExpiredSignature
-      render json: { error: 'Token expired' }, status: :unauthorized
+      raise Exceptions::Unauthorized('expired token')
     end
   end
 
