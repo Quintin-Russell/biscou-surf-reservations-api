@@ -1,0 +1,40 @@
+module ReservationStatusesConstants
+  STATUS_PENDING = 'pending'
+  STATUS_CONFIRMED = 'confirmed'
+  STATUS_CHECKED_IN = 'checked_in'
+  STATUS_CHECKED_OUT = 'checked_out'
+  STATUS_CANCELLED = 'cancelled'
+  STATUS_NO_SHOW = 'no_show'
+
+  ALL_STATUSES = [
+    STATUS_PENDING,
+    STATUS_CONFIRMED,
+    STATUS_CHECKED_IN,
+    STATUS_CHECKED_OUT,
+    STATUS_CANCELLED,
+    STATUS_NO_SHOW
+  ].freeze
+
+  ACTIVE_STATUSES = [
+    STATUS_CONFIRMED,
+    STATUS_CHECKED_IN
+  ].freeze
+
+  INACTIVE_STATUSES = [
+    STATUS_CANCELLED,
+    STATUS_NO_SHOW,
+    STATUS_CHECKED_OUT
+  ].freeze
+
+  GOOD_STANDING_STATUSES = [
+    STATUS_CONFIRMED,
+    STATUS_CHECKED_IN,
+    STATUS_CHECKED_OUT
+  ].freeze
+
+  BAD_STANDING_STATUSES = [
+    STATUS_NO_SHOW,
+    STATUS_CANCELLED,
+    STATUS_PENDING
+  ].freeze
+end
