@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include UserPermissionsConstants
+  include UserRolesConstants
   ### Attributes
   has_secure_password
   attribute :first_name, type: String
@@ -13,8 +15,8 @@ class User < ApplicationRecord
 
   ### Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :permission, inclusion: { in: ['employee', 'instructor', 'guest', 'main_guest', 'manager', 'admin'] }
-  validates :role, inclusion: { in: ['employee', 'guest'] }
+  validates :permission, inclusion: { in: ALL_PERMISSIONS }
+  validates :role, inclusion: { in: ALL_ROLES }
 
 
   def self.by_email(email)

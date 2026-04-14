@@ -10,31 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_16_144903) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_142000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
-  create_table "accommodation_locations", force: :cascade do |t|
+  create_table "accommodation_locations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "capacity"
     t.string "city"
     t.datetime "created_at", null: false
     t.string "location"
     t.string "name"
-    t.string "type"
+    t.string "property_type"
     t.datetime "updated_at", null: false
   end
 
-  create_table "accommodations", force: :cascade do |t|
+  create_table "accommodations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "accommodation_location_id"
+    t.string "accommodation_type"
     t.integer "bed_number"
     t.integer "capacity"
     t.datetime "created_at", null: false
     t.string "name"
-    t.string "type"
     t.datetime "updated_at", null: false
   end
 
-  create_table "activities", force: :cascade do |t|
+  create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "availability_end"
     t.date "avalability_start"
     t.datetime "created_at", null: false
@@ -43,7 +44,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_16_144903) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
     t.jsonb "data"
