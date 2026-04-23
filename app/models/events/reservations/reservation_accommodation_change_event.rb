@@ -2,11 +2,10 @@ module Events
   module Reservations
     class ReservationAccommodationChangeEvent < BaseReservationEvent
       private
-
-      def event_type_name
+      def event_type
         'reservation_update'
       end
-      def action_name
+      def action
         'accommodation_change'
       end
 

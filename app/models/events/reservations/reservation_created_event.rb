@@ -3,10 +3,10 @@ module Events
     class ReservationCreatedEvent < BaseReservationEvent
       private
 
-      def event_type_name
+      def self.event_type
         'reservation_created'
       end
-      def action_name
+      def self.action
         'created'
       end
     end
