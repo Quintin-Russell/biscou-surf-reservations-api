@@ -3,10 +3,10 @@ module Events
     class ReservationCancelEvent < BaseReservationEvent
       private
 
-      def event_type_name
+      def event_type
         'reservation_update'
       end
-      def action_name
+      def action
         'canceled'
       end
 
