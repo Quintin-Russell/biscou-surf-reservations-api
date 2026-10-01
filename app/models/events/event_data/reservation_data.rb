@@ -2,7 +2,7 @@
 module Events
   module EventData
     class ReservationData < BaseEventData
-      include ReservationStatusesConstants
+      include ReservationConstants
 
       ## attributes
       attribute reservation_id: String

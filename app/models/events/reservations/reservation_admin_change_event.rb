@@ -1,13 +1,12 @@
 module Events
   module Reservations
     class ReservationAdminChangeEvent < BaseReservationEvent
-      private
-
-      def event_type
-        'reservation_update'
+      def self.event_type
+        RESERVATION_UPDATE
       end
-      def action
-        'admin_change'
+
+      def self.action
+        ADMIN_CHANGE_ACTION
       end
 
       ## methods
