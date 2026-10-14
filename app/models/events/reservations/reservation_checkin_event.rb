@@ -1,13 +1,12 @@
 module Events
   module Reservations
     class ReservationCheckinEvent < BaseReservationEvent
-      private
-
-      def event_type
-        'reservation_update'
+      def self.event_type
+        RESERVATION_UPDATE
       end
-      def action
-        'checkin'
+
+      def self.action
+        CHECKIN_ACTION
       end
 
       ## methods

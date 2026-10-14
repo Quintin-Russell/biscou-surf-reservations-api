@@ -1,13 +1,12 @@
 module Events
   module Reservations
     class ReservationGuestRemovedEvent < BaseReservationEvent
-      private
-
-      def event_type
-        'reservation_update'
+      def self.event_type
+        RESERVATION_UPDATE
       end
-      def action
-        'guest_removed'
+
+      def self.action
+        GUEST_REMOVED_ACTION
       end
 
       ## methods

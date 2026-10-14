@@ -2,17 +2,16 @@
 
 class EventPublisher
   class << self
-    def publish(event_type:, action:, payload: {}, options: {})
-      create_event(event_type:, action:, payload:)
+    def publish(event_type:, payload: {}, options: {})
+      @event = EventStorageJob.perform(event_type:, payload:)
       # publish update if necessary
       handle_broadcast
       @event
     end
 
-    def create_event(event_type:, action:, payload:)
-      raise Exceptions::MissingEventParametersError unless event_type.present? && payload.present?
+    def create_event(payload:)
       # make event
-      @event = make_standard_event(event_type:, action:, payload:)
+      @event = make_standard_event(event_type:,payload:)
       # store event
       EventStorageJob.perform_async(@event)
     end
@@ -32,13 +31,8 @@ class EventPublisher
 
     private
 
-    def make_standard_event(event_type:, action:, payload:)
-      {
-        event_type:,
-        action:,
-        data: payload,
-        source: 'api'
-      }
+    def make_reservation_event(payload:)
+
     end
   end
 end

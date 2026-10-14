@@ -1,13 +1,12 @@
 module Events
   module Reservations
     class ReservationCancelEvent < BaseReservationEvent
-      private
-
-      def event_type
-        'reservation_update'
+      def self.event_type
+        RESERVATION_UPDATE
       end
-      def action
-        'canceled'
+
+      def self.action
+        CANCELED_ACTION
       end
 
       ## methods
