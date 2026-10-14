@@ -43,9 +43,10 @@ module Authentication
     end
 
     def end_session
+        user = current_user
         Current.session&.destroy
         cookies.delete(AUTH_FIELD_ON_COOKIE, **auth_cookie_options)
-        Current.session = nil
+        end_session_cleanup(user)
     end
 
     def auth_cookie_options
@@ -57,8 +58,14 @@ module Authentication
         }
     end
 
-    ## needs to hold all auth logic:
-        ## create session
-        ## XXXX check if session is active
-        ## end session
+    def end_session_cleanup(user)
+        Current.session = nil
+        destroy_connections(user)
+    end
+
+    def destroy_connections(user)
+        ActionCable.server.remote_connections.where(current_user: user).disconnect
+        rescue StandardError => e
+            Rails.logger.warn "ActionCable disconnect failed for user #{user.id}: #{e.class}"
+    end
 end
