@@ -4,7 +4,8 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     phone_number { Faker::PhoneNumber.cell_phone_in_e164 }
     nationality { Faker::Address.country }
-    email { Faker::Internet.email }
+    sequence(:email) { |n| "user#{n}@example.com" }
+    password { "Password123!" }
     # role
     # permission
   end
