@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
-  skip_before_action :authenticate_request, only: [:create]
+  allow_unauthorized_access only: %i[ create ]
 
   def create
     @current_user = User.create!(new_user_params)
+    start_new_session(@current_user)
   end
 
   private

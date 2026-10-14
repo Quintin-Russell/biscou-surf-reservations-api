@@ -4,7 +4,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require 'rspec'
+require 'rspec/rails'
 require 'faker'
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -45,7 +45,8 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   # Include actioncable testing
   config.include ActionCable::TestHelper
-  config.include ActionCable::Connection::TestCase
+  # Connection specs use rspec-rails `type: :channel` (ActionCable::Connection::TestCase is a class, not a module)
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # Include custom helpers
   # config.include RequestHelpers, type: :request

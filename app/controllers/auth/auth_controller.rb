@@ -1,21 +1,23 @@
 module Auth
   class AuthController < ApplicationController
-    skip_before_action :authenticate_request, only: [:create_auth_token, :destroy_auth, :email_exists]
-
-    def current_user
-      @current_user
-    end
+    allow_unauthorized_access only: %i[ login email_exists destroy_auth ]
+    rate_limit to: 10, within: 10.minutes, name: "email-check", only: :email_exists,
+      with: -> { render json: { error: "Too many attempts" }, status: :too_many_requests }
+    rate_limit to: 10, within: 1.minutes, name: "login-attempt", only: :login,
+      with: -> { render json: { error: "Too many attempts" }, status: :too_many_requests }
 
     def email_exists
       @email_exists = User.by_email(email_param)
     end
 
-    def create_auth_token
+    def show_current_user
+      @current_user = Current.user
+    end
+
+    def login
       user = User.by_email(email_param)
       if user&.authenticate(password_param)
-        token = encode_token({ user_id: user.id })
-        set_jwt_cookie(token)
-
+        start_new_session(user)
         @current_user = user
       else
         render json: { error: 'Invalid email or password' }, status: :unauthorized
@@ -23,8 +25,9 @@ module Auth
     end
 
     def destroy_auth
-      cookies.delete(:auth)
-      render json: { message: 'Logged out' }, status: :ok
+      has_session
+      end_session
+      head :no_content
     end
 
     private
@@ -35,23 +38,6 @@ module Auth
 
     def password_param
       params.require(:password)
-    end
-
-    def encode_token(payload)
-      JWT.encode(payload, Rails.application.credentials.jwt_secret, "HS256")
-    end
-
-    def set_jwt_cookie(token)
-      is_cross_origin = Rails.env.development? && request.headers['Origin'].present?
-
-
-      cookies.signed[:auth] = {
-        value: token,
-        httponly: true,
-        secure: Rails.env.production? || is_cross_origin,
-        same_site: is_cross_origin ? :none : :lax,
-        expires: 6.hours.from_now
-      }
     end
   end
 end
