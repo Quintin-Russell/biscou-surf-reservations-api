@@ -5,47 +5,53 @@ module Events
       include ReservationConstants
 
       ## attributes
-      attribute reservation_id: String
-      attribute start_date: Date
-      attribute end_date: Date
-      attribute paid: Boolean, default: false
-      attribute price: Integer
-      attribute notes: String
-      attribute status: String, default: 'pending'
+      attribute :reservation_id, :string
+      attribute :start_date, :date
+      attribute :end_date, :date
+      attribute :paid, :boolean, default: false
+      attribute :price, :integer
+      attribute :notes, :string
+      attribute :status, :string, default: STATUS_PENDING
 
-      attribute primary_guest: String
-      attribute reservation_manager: String
+      # user ids (uuid)
+      attribute :primary_guest, :string
+      attribute :reservation_manager, :string
 
-      attribute guests: Array[String]
-      attribute activities: Array[String]
-      attribute accommodation: String
+      # ActiveModel has no array type: untyped attributes pass values through as-is
+      attribute :guests, default: -> { [] }
+      attribute :activities, default: -> { [] }
+      attribute :accommodation, :string
 
       ## validations
-      validates :reservation_id, :price, :paid, :primary_guest, :reservation_manager, :accommodation, presence: true
-      validates :start_date, :end_date, presence: true, date: true
-
-      validates :price, numericality: { greater_than: 0 }
-
+      # :date casts unparseable strings to nil, so presence also rejects invalid dates
+      validates :reservation_id, :price, :primary_guest, :reservation_manager, :accommodation,
+                :start_date, :end_date, presence: true
+      # presence would reject false
+      validates :paid, inclusion: { in: [true, false] }
+      validates :price, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
       validates :status, inclusion: { in: ALL_STATUSES }
 
-      validates :primary_guest_exists?
-      validates :reservation_manager_exists?
-      validates :end_date_after_start_date
+      validate :end_date_after_start_date
+      validate :primary_guest_exists
+      validate :reservation_manager_exists
 
-      ## methods
       private
+
       def end_date_after_start_date
-        start_date && end_date && (end_date - start_date).to_i > 0
+        return unless start_date && end_date
+        errors.add(:end_date, 'must be after start date') unless end_date > start_date
       end
 
-      def primary_guest_exists?
-        User.exists?(primary_guest) && guests.any? { |guest| guest == primary_guest }
+      def primary_guest_exists
+        return if primary_guest.blank?
+        errors.add(:primary_guest, 'does not exist') unless User.exists?(id: primary_guest)
+        errors.add(:primary_guest, 'must be one of the guests') unless Array(guests).include?(primary_guest)
       end
 
-      def reservation_manager_exists?
-        User.exists?(reservation_manager)
+      def reservation_manager_exists
+        return if reservation_manager.blank?
+        errors.add(:reservation_manager, 'does not exist') unless User.exists?(id: reservation_manager)
       end
     end
   end
 end
-

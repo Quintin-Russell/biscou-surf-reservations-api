@@ -1,4 +1,4 @@
-require Rails.root.join('app/constants/reservation_event_types_constants')
+require Rails.root.join('app/constants/reservation_constants')
 require Rails.root.join('app/constants/user_permissions_constants')
 require Rails.root.join('app/constants/user_roles_constants')
 require Rails.root.join('app/constants/accommodation_location_types_constants')

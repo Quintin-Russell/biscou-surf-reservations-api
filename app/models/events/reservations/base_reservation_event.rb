@@ -3,8 +3,8 @@ module Events
     class BaseReservationEvent < Event
       include ReservationConstants
       ## scopes
-      scope :by_id, -> (reservation_id) { where("reservation_id = ?", reservation_id) }
-      scope :by_start_date, -> (start_date) { where("start_date = ?", start_date) }
+      scope :by_id, -> (reservation_id) { where("data->>'reservation_id' = ?", reservation_id) }
+      scope :by_start_date, -> (start_date) { where("data->>'start_date' = ?", start_date.to_date.iso8601) }
       ## methods
       def self.create_event(params)
         create!({

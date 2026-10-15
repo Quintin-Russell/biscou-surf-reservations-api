@@ -7,34 +7,18 @@ module JsonbAttribute
     def jsonb_attribute(name, default: {})
       attribute name, :jsonb, default: default
 
+      # Parse JSON strings into a Hash/Array before assignment; the :jsonb type
+      # handles encoding, so pre-encoding here would store a JSON string scalar
       define_method("#{name}=") do |value|
-        json_string = case value
-                      when String
-                        value
-                      when NilClass
-                        nil
-                      else
-                        Oj.dump(value, mode: :rails)
-                      end
-
-        super(json_string)
+        parsed = value.is_a?(String) ? Oj.load(value, mode: :rails) : value
+        super(parsed)
+      rescue Oj::ParseError, EncodingError, JSON::ParserError
+        super(default)
       end
 
-      # Define a reader that parses with Oj
       define_method(name) do
         value = super()
-        return default if value.nil?
-
-        case value
-        when String
-          Oj.load(value, mode: :rails)
-        when Hash, Array
-          value
-        else
-          default
-        end
-      rescue Oj::ParseError
-        default
+        value.is_a?(Hash) || value.is_a?(Array) ? value : default
       end
     end
   end
