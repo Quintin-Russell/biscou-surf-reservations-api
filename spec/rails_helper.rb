@@ -6,6 +6,7 @@ require_relative '../config/environment'
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 require 'faker'
+require 'sidekiq/testing'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -47,6 +48,9 @@ RSpec.configure do |config|
   config.include ActionCable::TestHelper
   # Connection specs use rspec-rails `type: :channel` (ActionCable::Connection::TestCase is a class, not a module)
   config.include ActiveSupport::Testing::TimeHelpers
+
+  # Sidekiq runs in fake mode: jobs are pushed to an in-memory array, not Redis
+  config.before(:each) { Sidekiq::Job.clear_all }
 
   # Include custom helpers
   # config.include RequestHelpers, type: :request

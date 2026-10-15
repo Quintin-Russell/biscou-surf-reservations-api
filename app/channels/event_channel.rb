@@ -4,7 +4,7 @@ class EventChannel < ApplicationCable::Channel
     stream_from 'events'
   end
 
-  def broadcast_to_frontend(event)
+  def self.broadcast_to_frontend(event)
     ActionCable.server.broadcast("events", event)
   end
 

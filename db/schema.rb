@@ -45,13 +45,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_14_033947) do
   end
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "action"
+    t.string "action", null: false
     t.datetime "created_at", null: false
-    t.jsonb "data"
-    t.string "event_type"
+    t.jsonb "data", default: {}, null: false
+    t.string "event_type", null: false
     t.datetime "processed_at"
     t.string "source"
+    t.string "type"
     t.datetime "updated_at", null: false
+    t.index "((data ->> 'reservation_id'::text))", name: "index_events_on_data_reservation_id"
+    t.index ["data"], name: "index_events_on_data", opclass: :jsonb_path_ops, using: :gin
+    t.index ["type"], name: "index_events_on_type"
   end
 
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

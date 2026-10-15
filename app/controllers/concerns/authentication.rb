@@ -24,17 +24,15 @@ module Authentication
     def require_authentication
         has_session || render(json: { error: "Unauthorized" }, status: :unauthorized)
     end
-    # checks to see if current session is cached on Current or an active session exists with info from token => sets current.session
+
     def has_session
         Current.session ||= Session.find_active(cookies.signed[AUTH_FIELD_ON_COOKIE])
     end
-    # called after user login and password are confirmed
+
     def start_new_session(user)
         end_session if has_session
-        ## create session
         user.sessions.create!(ip_address: request.remote_ip).tap do |new_session|
             Current.session = new_session
-        ## use session_id to create a cookie; all other data stays in DB
             cookies.signed[AUTH_FIELD_ON_COOKIE] = auth_cookie_options.merge(
                 value: new_session.id,
                 expires: new_session.expires_at
