@@ -24,23 +24,30 @@ RSpec.describe Events::Reservations::BaseReservationEvent do
   describe '.create_event' do
     let(:event_class) { Events::Reservations::ReservationCheckinEvent }
 
-    it 'persists the event with type, action and processed_at' do
-      freeze_time do
-        event = event_class.create_event(data: { reservation_id: 'res-1' })
+    let(:reservation_data) { build(:reservation_data, reservation_id: 'res-1') }
 
-        expect(event).to be_persisted
-        expect(event.event_type).to eq(ReservationConstants::RESERVATION_UPDATE)
-        expect(event.action).to eq(ReservationConstants::CHECKIN_ACTION)
-        expect(event.processed_at).to eq(Time.current)
-        expect(event.data).to eq('reservation_id' => 'res-1')
-      end
+    it 'persists the event with type, action and the payload attributes' do
+      event = event_class.create_event(event_data: reservation_data)
+
+      expect(event).to be_persisted
+      expect(event.event_type).to eq(ReservationConstants::RESERVATION_UPDATE)
+      expect(event.action).to eq(ReservationConstants::CHECKIN_ACTION)
+      expect(event.reload.data).to eq(reservation_data.attributes.as_json)
+    end
+
+    it 'leaves processed_at unset until the event is delivered' do
+      expect(event_class.create_event(event_data: reservation_data).processed_at).to be_nil
     end
   end
 
   describe 'scopes' do
     let(:event_class) { Events::Reservations::ReservationCreatedEvent }
-    let!(:match) { event_class.create_event(data: { reservation_id: 'res-1', start_date: Date.new(2026, 11, 1) }) }
-    let!(:other) { event_class.create_event(data: { reservation_id: 'res-2', start_date: Date.new(2026, 12, 1) }) }
+    let!(:match) do
+      event_class.create_event(event_data: build(:reservation_data, reservation_id: 'res-1', start_date: Date.new(2026, 11, 1)))
+    end
+    let!(:other) do
+      event_class.create_event(event_data: build(:reservation_data, reservation_id: 'res-2', start_date: Date.new(2026, 12, 1)))
+    end
 
     it '.by_id finds events by data reservation_id' do
       expect(described_class.by_id('res-1')).to contain_exactly(match)

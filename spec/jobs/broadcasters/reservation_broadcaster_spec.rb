@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Broadcasters::ReservationBroadcaster do
-  let(:event) { Events::Reservations::ReservationCreatedEvent.create_event(data: { reservation_id: 'res-1' }) }
+  let(:event) { Events::Reservations::ReservationCreatedEvent.create_event(event_data: build(:reservation_data)) }
 
   before { allow(BroadcastRedisService).to receive(:perform) }
 

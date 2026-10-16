@@ -11,8 +11,8 @@ class User < ApplicationRecord
   attribute :phone_number, type: String
   attribute :nationality, type: String
   attribute :email, type: String
-  attribute :role, type: String, default: 'guest'
-  attribute :permission, type: String, default: 'guest'
+  attribute :role, type: String, default: "guest"
+  attribute :permission, type: String, default: "guest"
 
   ### Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
