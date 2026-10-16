@@ -52,6 +52,9 @@ RSpec.configure do |config|
   # Sidekiq runs in fake mode: jobs are pushed to an in-memory array, not Redis
   config.before(:each) { Sidekiq::Job.clear_all }
 
+  # events publish to the Redis stream after commit; specs that need the real stream use and_call_original
+  config.before(:each) { allow(EventStreamService).to receive(:publish) }
+
   # Include custom helpers
   # config.include RequestHelpers, type: :request
 

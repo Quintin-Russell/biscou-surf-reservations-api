@@ -1,1 +1,5 @@
-# ADD REOCCURRING JOBS HERE
+# Recurring Sidekiq jobs (sidekiq-cron), loaded in config/initializers/sidekiq.rb
+event_stream_sweeper:
+  cron: "*/5 * * * *"
+  class: "EventStreamSweeperJob"
+  description: "Re-publishes unprocessed events to the Redis stream"

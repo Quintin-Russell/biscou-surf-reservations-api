@@ -20,20 +20,19 @@ RSpec.describe Event do
       expect(Event.find(event.id)).to be_a(event_class)
     end
 
-    it 'enqueues EventBroadcastJob with the event id after commit' do
+    it 'publishes the event to the stream after commit' do
       event = event_class.create!(event_data:)
 
-      expect(EventBroadcastJob.jobs.size).to eq(1)
-      expect(EventBroadcastJob.jobs.first['args']).to eq([event.id])
+      expect(EventStreamService).to have_received(:publish).with(event).once
     end
 
-    it 'does not enqueue a broadcast when the transaction rolls back' do
+    it 'does not publish when the transaction rolls back' do
       Event.transaction do
         event_class.create!(event_data:)
         raise ActiveRecord::Rollback
       end
 
-      expect(EventBroadcastJob.jobs).to be_empty
+      expect(EventStreamService).not_to have_received(:publish)
     end
   end
 

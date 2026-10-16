@@ -17,7 +17,7 @@ class Event < ApplicationRecord
   validates :event_data, presence: true, on: :create
   validate :event_data_valid, on: :create, if: :event_data
 
-  after_create_commit :enqueue_broadcast
+  after_create_commit :publish_to_stream
 
   def self.data_class
     raise NotImplementedError, "Event must declare a data_class"
@@ -68,8 +68,8 @@ class Event < ApplicationRecord
     event_data.errors.each { |error| errors.add(:event_data, "#{error.attribute} #{error.message}") }
   end
 
-  # runs only after the transaction commits, so workers never see an uncommitted event
-  def enqueue_broadcast
-    EventBroadcastJob.perform_async(id)
+  # runs only after the transaction commits, so consumers never see an uncommitted event
+  def publish_to_stream
+    EventStreamService.publish(self)
   end
 end

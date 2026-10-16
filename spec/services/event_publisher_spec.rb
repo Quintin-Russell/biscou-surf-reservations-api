@@ -14,10 +14,10 @@ RSpec.describe EventPublisher do
       expect(event.reload.data).to eq(event_data.attributes.as_json)
     end
 
-    it 'enqueues a broadcast for the new event' do
+    it 'publishes the new event to the stream' do
       event = described_class.publish(event_class:, event_data:)
 
-      expect(EventBroadcastJob.jobs.map { |job| job['args'] }).to eq([[event.id]])
+      expect(EventStreamService).to have_received(:publish).with(event)
     end
 
     it 'raises when event_class is missing' do
@@ -30,12 +30,12 @@ RSpec.describe EventPublisher do
         .to raise_error(Exceptions::MissingEventParametersError)
     end
 
-    it 'does not persist or enqueue when creation fails' do
+    it 'does not persist or publish when creation fails' do
       allow(event_class).to receive(:create_event).and_raise(ActiveRecord::RecordInvalid)
 
       expect { described_class.publish(event_class:, event_data:) }.to raise_error(ActiveRecord::RecordInvalid)
       expect(Event.count).to eq(0)
-      expect(EventBroadcastJob.jobs).to be_empty
+      expect(EventStreamService).not_to have_received(:publish)
     end
   end
 end
