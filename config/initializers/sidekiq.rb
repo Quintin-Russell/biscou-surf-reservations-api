@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-REDIS_CONFIG = YAML.load_file(Rails.root.join('config/redis.yml'))[Rails.env]
 
 # Sidekiq configuration
 Sidekiq.configure_server do |config|

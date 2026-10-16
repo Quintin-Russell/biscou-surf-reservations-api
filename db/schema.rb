@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_14_033947) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_095750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -54,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_14_033947) do
     t.string "type"
     t.datetime "updated_at", null: false
     t.index "((data ->> 'reservation_id'::text))", name: "index_events_on_data_reservation_id"
+    t.index ["created_at"], name: "index_events_on_created_at_unprocessed", where: "(processed_at IS NULL)"
     t.index ["data"], name: "index_events_on_data", opclass: :jsonb_path_ops, using: :gin
     t.index ["type"], name: "index_events_on_type"
   end
