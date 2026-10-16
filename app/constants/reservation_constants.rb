@@ -1,11 +1,11 @@
 module ReservationConstants
   ## reservation statuses
-  STATUS_CONFIRMED = 'confirmed'
-  STATUS_CHECKED_IN = 'checked_in'
-  STATUS_CHECKED_OUT = 'checked_out'
-  STATUS_CANCELLED = 'cancelled'
-  STATUS_NO_SHOW = 'no_show'
-  STATUS_PENDING = 'pending'
+  STATUS_CONFIRMED = "confirmed"
+  STATUS_CHECKED_IN = "checked_in"
+  STATUS_CHECKED_OUT = "checked_out"
+  STATUS_CANCELLED = "cancelled"
+  STATUS_NO_SHOW = "no_show"
+  STATUS_PENDING = "pending"
 
   ALL_STATUSES = [
     STATUS_PENDING,
@@ -45,19 +45,15 @@ module ReservationConstants
   ACTIVITY_EVENT_REGEX = /\Aactivity\./
 
   ## event types
-  RESERVATION_CREATED = 'reservation.created'
-  RESERVATION_UPDATE = 'reservation.update'
+  RESERVATION_CREATED = "reservation.created"
+  RESERVATION_UPDATE = "reservation.updated"
   ## ACTION
-  CREATED_ACTION = 'created'
-  ACCOMMODATION_UPDATE_ACTION = 'accommodation_change'
-  ADMIN_CHANGE_ACTION = 'admin_change'
-  CANCELED_ACTION = 'canceled'
-  CHECKIN_ACTION = 'checkin'
-  CHECKOUT_ACTION = 'checkout'
-  GUEST_ADDED_ACTION = 'guest_added'
-  GUEST_REMOVED_ACTION = 'guest_removed'
-  ## reservation event creation
-  RESERVATION_EVENT_CREATOR_BY_ACTION = {
-
-  }
+  CREATED_ACTION = "created"
+  ACCOMMODATION_UPDATE_ACTION = "accommodation_change"
+  ADMIN_CHANGE_ACTION = "admin_change"
+  CANCELED_ACTION = "canceled"
+  CHECKIN_ACTION = "checkin"
+  CHECKOUT_ACTION = "checkout"
+  GUEST_ADDED_ACTION = "guest_added"
+  GUEST_REMOVED_ACTION = "guest_removed"
 end

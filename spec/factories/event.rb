@@ -7,37 +7,37 @@ FactoryBot.define do
     end
 
     trait :reservation_canceled do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'canceled' }
     end
 
     trait :reservation_checkin do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'checkin' }
     end
 
     trait :reservation_checkout do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'checkout' }
     end
 
     trait :reservation_guest_change do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'guest_change' }
       end
 
     trait :reservation_activity_change do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'activity_change' }
       end
 
     trait :reservation_admin_change do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'admin_change' }
       end
 
     trait :reservation_accommodation_change do
-      event_type { 'reservation.update' }
+      event_type { 'reservation.updated' }
       action { 'accommodation_change' }
     end
     ## put traits that control amount of guests and activities

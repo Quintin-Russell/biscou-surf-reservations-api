@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe EventBroadcastJob do
-  let(:event) { Events::Reservations::ReservationCreatedEvent.create_event(data: { reservation_id: 'res-1' }) }
+  let(:event) { Events::Reservations::ReservationCreatedEvent.create_event(event_data: build(:reservation_data)) }
 
   it 'uses the events queue with 3 retries' do
     expect(described_class.get_sidekiq_options).to include('queue' => :events, 'retry' => 3)
