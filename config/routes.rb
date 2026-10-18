@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       get "email_exists", to: "auth#email_exists"
     end
 
-    post 'users/create', to: "users#create"
+    post "users/create", to: "users#create"
+    post "users/signup", to: "users#signup"
   end
 end

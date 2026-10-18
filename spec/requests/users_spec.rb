@@ -12,19 +12,19 @@ RSpec.describe 'Users', type: :request do
     }
   end
 
-  def create_user(attrs = valid_attributes)
-    post '/users/create', params: attrs, as: :json
+  def signup(attrs = valid_attributes)
+    post '/users/signup', params: attrs, as: :json
   end
 
-  describe 'POST /users/create' do
+  describe 'POST /users/signup' do
     context 'with valid parameters' do
       it 'creates a user without requiring authentication' do
-        expect { create_user }.to change(User, :count).by(1)
+        expect { signup }.to change(User, :count).by(1)
         expect(response).to have_http_status(:ok)
       end
 
       it 'returns the serialized user' do
-        create_user
+        signup
 
         body = response.parsed_body
         expect(body).to include(
@@ -38,7 +38,7 @@ RSpec.describe 'Users', type: :request do
       end
 
       it 'hashes the password' do
-        create_user
+        signup
 
         user = User.last
         expect(user.password_digest).to be_present
@@ -47,18 +47,26 @@ RSpec.describe 'Users', type: :request do
       end
 
       it 'logs the new user in (session row + cookie)' do
-        expect { create_user }.to change(Session, :count).by(1)
+        expect { signup }.to change(Session, :count).by(1)
 
         expect(Session.last.user).to eq(User.last)
         expect(cookies['session_id']).to be_present
       end
 
       it 'ignores privilege fields like role and permission' do
-        create_user(valid_attributes.merge(role: 'employee', permission: 'admin'))
+        signup(valid_attributes.merge(role: 'employee', permission: 'admin'))
 
         user = User.last
         expect(user.role).to eq('guest')
         expect(user.permission).to eq('guest')
+      end
+
+      it 'publishes a UserCreatedEvent created by the new user' do
+        expect { signup }.to change(Events::Users::UserCreatedEvent, :count).by(1)
+
+        event_data = Events::Users::UserCreatedEvent.last.data
+        expect(event_data['user_id']).to eq(User.last.id)
+        expect(event_data['created_by']).to eq(User.last.id)
       end
     end
 
@@ -66,7 +74,12 @@ RSpec.describe 'Users', type: :request do
       %i[first_name last_name email password nationality phone_number].each do |field|
         it "raises MissingParameters when #{field} is missing" do
           # TODO: becomes a 422 response once rescue_from Exceptions::BaseError is added (todo #9)
-          expect { create_user(valid_attributes.except(field)) }
+          expect { signup(valid_attributes.except(field)) }
+            .to raise_error(Exceptions::MissingParameters)
+        end
+
+        it "raises MissingParameters when #{field} is blank" do
+          expect { signup(valid_attributes.merge(field => '')) }
             .to raise_error(Exceptions::MissingParameters)
         end
       end
@@ -74,38 +87,39 @@ RSpec.describe 'Users', type: :request do
 
     context 'with invalid values' do
       it 'returns 422 and creates no session for an invalid email' do
-        expect { create_user(valid_attributes.merge(email: 'not-an-email')) }
+        expect { signup(valid_attributes.merge(email: 'not-an-email')) }
           .not_to change(Session, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it 'returns 422 for a duplicate email' do
+      it 'returns 422 and creates no user or session for a duplicate email' do
         create(:user, email: valid_attributes[:email])
 
-        expect { create_user }.not_to change(User, :count)
+        expect { signup }.not_to change(User, :count)
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(Session.count).to eq(0)
       end
     end
 
     context 'not implemented yet (todo #16/#17)' do
       it 'normalizes email to lowercase' do
         pending 'add `normalizes :email` to User'
-        create_user(valid_attributes.merge(email: 'JohnDoe@SurfRetreat.COM'))
+        signup(valid_attributes.merge(email: 'JohnDoe@SurfRetreat.COM'))
 
         expect(User.last.email).to eq('johndoe@surfretreat.com')
       end
 
       it 'rejects passwords shorter than 8 characters' do
         pending 'add a password length validation to User'
-        create_user(valid_attributes.merge(password: 'short'))
+        signup(valid_attributes.merge(password: 'short'))
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'returns 201 Created' do
-        pending 'render with status: :created in UsersController#create'
-        create_user
+        pending 'render with status: :created in UsersController#signup'
+        signup
 
         expect(response).to have_http_status(:created)
       end
