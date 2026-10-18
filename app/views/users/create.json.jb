@@ -1,1 +1,1 @@
-UserSerializer.new(@current_user).safe_json
+UserSerializer.new(@user).safe_json
