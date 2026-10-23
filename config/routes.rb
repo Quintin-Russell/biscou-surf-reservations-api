@@ -9,7 +9,10 @@ Rails.application.routes.draw do
       get "email_exists", to: "auth#email_exists"
     end
 
-    post "users/create", to: "users#create"
-    post "users/signup", to: "users#signup"
+    resources :users, only: [:create, :update, :show, :index] do
+      collection do
+        post "signup", to: "users#signup"
+      end
+    end
   end
 end

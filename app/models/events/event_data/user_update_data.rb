@@ -8,8 +8,8 @@ module Events
       attribute :updator, :string
 
       ## Validations
-      validate user_exists?
-      validate updator_exists?
+      validate :user_exists?
+      validate :updator_exists?
 
       validates :current_values, presence: true
       validates :previous_values, presence: true
@@ -17,11 +17,11 @@ module Events
       private
 
       def user_exists?
-        erros.add(:user_id, "user_id must be a valid user") unless User.exists?(id: user_id)
+        errors.add(:user_id, "user_id must be a valid user") unless User.exists?(id: user_id)
       end
 
       def updator_exists?
-        erros.add(:updator, "updator must be a valid user") unless User.exists?(id: updator)
+        errors.add(:updator, "updator must be a valid user") unless User.exists?(id: updator)
       end
     end
   end

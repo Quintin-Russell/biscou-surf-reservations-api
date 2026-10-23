@@ -6,13 +6,13 @@ class User < ApplicationRecord
 
   ### Attributes
   has_secure_password
-  attribute :first_name, type: String
-  attribute :last_name, type: String
-  attribute :phone_number, type: String
-  attribute :nationality, type: String
-  attribute :email, type: String
-  attribute :role, type: String, default: "guest"
-  attribute :permission, type: String, default: "guest"
+  attribute :first_name, :string
+  attribute :last_name, :string
+  attribute :phone_number, :string
+  attribute :nationality, :string
+  attribute :email, :string
+  attribute :role, :string, default: "guest"
+  attribute :permission, :string, default: "guest"
 
   ### Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -25,5 +25,9 @@ class User < ApplicationRecord
 
   def self.by_email(email)
     find_by(email: email)
+  end
+
+  def management?
+    MANAGEMENT_PERMISSIONS.include?(permission)
   end
 end

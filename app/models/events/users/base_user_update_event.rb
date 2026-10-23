@@ -7,6 +7,10 @@ module Events
         USER_UPDATED
       end
 
+      def self.action
+        USER_UPDATE_ACTION
+      end
+
       def self.data_class
         Events::EventData::UserUpdateData
       end

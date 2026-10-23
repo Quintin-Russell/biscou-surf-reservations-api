@@ -6,6 +6,7 @@ module UserEventConstants
   CREATED_ACTION = "created"
   DEACTIVATED_ACTION = "deactivated"
   ROLE_CHANGE_ACTION = "role_changed"
+  USER_UPDATE_ACTION = "updated"
   PERMISSION_CHANGE_ACTION = "permission_changed"
   PHONE_NUMBER_CHANGE_ACTION = "phone_number_changed"
   EMAIL_CHANGE_ACTION = "email_changed"
