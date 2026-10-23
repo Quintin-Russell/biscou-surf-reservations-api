@@ -13,7 +13,8 @@ class UserSerializer
       full_name: "#{@user.first_name} #{@user.last_name}",
       role: @user.role,
       phone_number: @user.phone_number,
-      created_at: @user.created_at
+      created_at: @user.created_at,
+      is_management: UserRolesConstants::EMPLOYEE_ROLE == @user.role && UserPermissionsConstants::MANAGEMENT_PERMISSIONS.include?(@user.permission)
     }
   end
 end
