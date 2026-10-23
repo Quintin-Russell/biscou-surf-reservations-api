@@ -1,0 +1,1 @@
+UserSerializer.new(@user).safe_json

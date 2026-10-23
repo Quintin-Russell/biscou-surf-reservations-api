@@ -14,5 +14,7 @@ Rails.application.routes.draw do
         post "signup", to: "users#signup"
       end
     end
+
+    resources :profiles, only: [:update, :show]
   end
 end
