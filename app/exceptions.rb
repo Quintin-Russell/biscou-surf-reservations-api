@@ -33,5 +33,14 @@ module Exceptions
     def initialize(*) = super(status: :unauthorized)
   end
 
+  class PasswordsDoNotMatch < BaseError
+    def default_message = "Passwords do not match"
+    def initialize(*) = super(status: :unprocessable_entity)
+  end
+
+  class IncorrectPassword < BaseError
+    def default_message = "Current password is incorrect"
+    def initialize(*) = super(status: :unprocessable_entity)
+  end
 
 end

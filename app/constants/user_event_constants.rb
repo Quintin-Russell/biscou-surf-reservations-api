@@ -12,4 +12,5 @@ module UserEventConstants
   EMAIL_CHANGE_ACTION = "email_changed"
   NAME_CHANGE_ACTION = "name_changed"
   NATIONALITY_CHANGE_ACTION = "nationality_changed"
+  PASSWORD_CHANGE_ACTION = "password_changed"
 end

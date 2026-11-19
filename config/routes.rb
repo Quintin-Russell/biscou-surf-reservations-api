@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :profiles, only: [:update, :show]
+    resources :profiles, only: [:update, :show] do
+      member do
+        patch "change_password", to: "profiles#change_password"
+      end
+    end
   end
 end
