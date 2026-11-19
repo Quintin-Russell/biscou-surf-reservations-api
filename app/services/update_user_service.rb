@@ -10,7 +10,8 @@ class UpdateUserService
         user.update!(params)
 
         event_data = Events::EventData::UserUpdateData.new(
-          user_id: updator,
+          user_id:,
+          updator:,
           previous_values:,
           current_values: user.attributes.slice(*fields)
         )
